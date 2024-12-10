@@ -1,1 +1,1 @@
-# simple-wordpress-kube
+# Jere Kube Lab Repository
