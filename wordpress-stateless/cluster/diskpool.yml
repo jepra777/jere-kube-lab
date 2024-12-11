@@ -1,0 +1,26 @@
+apiVersion: "openebs.io/v1beta2"
+kind: DiskPool
+metadata:
+  name: pool-jere-k8s-w1
+  namespace: openebs
+spec:
+  node: jere-k8s-w1
+  disks: ["aio:///var/local/openebs/pools/disk.img"]
+---
+apiVersion: "openebs.io/v1beta2"
+kind: DiskPool
+metadata:
+  name: pool-jere-k8s-w2
+  namespace: openebs
+spec:
+  node: jere-k8s-w2
+  disks: ["aio:///var/local/openebs/pools/disk.img"]
+---
+apiVersion: "openebs.io/v1beta2"
+kind: DiskPool
+metadata:
+  name: pool-jere-k8s-w3
+  namespace: openebs
+spec:
+  node: jere-k8s-w3
+  disks: ["aio:///var/local/openebs/pools/disk.img"]
