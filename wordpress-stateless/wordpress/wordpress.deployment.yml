@@ -12,6 +12,20 @@ spec:
       labels:
         app: wordpress
     spec:
+      initContainers:
+      - name: init
+        image: alpine/git
+        args:
+        - clone
+        - git@github.com:jepra777/jere-wp-stateless-repo.git
+        - /var/www/html
+        volumeMounts:
+        - name: www-data
+          mountPath: /var/www/html
+        - name: wordpress-dotssh
+          mountPath: /root/.ssh/
+          readOnly: true
+
       containers:
       - name: wordpress
         image: wordpress:6.5.5-fpm
@@ -41,6 +55,10 @@ spec:
       volumes:
       - name: www-data
         emptyDir: {}
+      - name: wordpress-dotssh
+        secret:
+          secretName: wordpress-dotssh
+          defaultMode: 0600
       - name: nginx
         configMap:
           name: wordpress-nginx
