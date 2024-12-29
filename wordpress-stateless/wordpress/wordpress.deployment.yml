@@ -12,6 +12,27 @@ spec:
       labels:
         app: wordpress
     spec:
+      securityContext:
+        fsGroup: 33
+
+      initContainers:
+      - name: init
+        image: alpine/git
+        command:
+        - /bin/sh
+        - -c
+        args:
+        - cd /var/www/html;
+          git clone https://github.com/jepra777/jere-wp-stateless-repo.git .;
+          git reset --hard $HASH;
+          rm -rf .git
+        env:
+        - name: HASH
+          value: origin/main
+        volumeMounts:
+        - name: www-data
+          mountPath: /var/www/html
+      
       containers:
       - name: wordpress
         image: wordpress:6.7.1-fpm
@@ -20,6 +41,8 @@ spec:
         volumeMounts:
         - name: www-data
           mountPath: /var/www/html
+        - name: wp-content-uploads
+          mountPath: /var/www/html/wp-content/uploads
         envFrom:
         - secretRef:
             name: wordpress-secrets
@@ -34,6 +57,9 @@ spec:
         - name: www-data
           mountPath: /var/www/html
           readOnly: true
+        - name: wp-content-uploads
+          mountPath: /var/www/html/wp-content/uploads
+          readOnly: true
         - name: nginx
           mountPath: /etc/nginx/conf.d
           readOnly: true
@@ -44,3 +70,6 @@ spec:
       - name: nginx
         configMap:
           name: wordpress-nginx
+      - name: wp-content-uploads
+        persistentVolumeClaim:
+          claimName: wp-content-uploads
